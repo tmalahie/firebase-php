@@ -45,6 +45,7 @@ use Kreait\Firebase\Value\Email;
 use Kreait\Firebase\Value\PhoneNumber;
 use Kreait\Firebase\Value\Provider;
 use Kreait\Firebase\Value\Uid;
+use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Token;
 use Psr\Http\Message\ResponseInterface;
@@ -548,7 +549,7 @@ class Auth
     public function parseToken(string $tokenString): Token
     {
         try {
-            return (new Parser())->parse($tokenString);
+            return Configuration::forUnsecuredSigner()->parser()->parse($tokenString);
         } catch (Throwable $e) {
             throw new InvalidArgumentException('The given token could not be parsed: '.$e->getMessage());
         }
@@ -588,7 +589,7 @@ class Auth
 
         if ($checkIfRevoked) {
             try {
-                $user = $this->getUser($verifiedToken->getClaim('sub'));
+                $user = $this->getUser($verifiedToken->claims()->get('sub'));
             } catch (Throwable $e) {
                 throw new InvalidToken($verifiedToken, "Error while getting the token's user: {$e->getMessage()}", $e->getCode(), $e);
             }
@@ -598,7 +599,7 @@ class Auth
                 return $verifiedToken;
             }
 
-            $tokenAuthenticatedAt = DT::toUTCDateTimeImmutable($verifiedToken->getClaim('auth_time'));
+            $tokenAuthenticatedAt = DT::toUTCDateTimeImmutable($verifiedToken->claims()->get('auth_time'));
             $tokenAuthenticatedAtWithLeeway = $tokenAuthenticatedAt->modify('-'.$leewayInSeconds.' seconds');
 
             $validSinceWithLeeway = DT::toUTCDateTimeImmutable($validSince)->modify('-'.$leewayInSeconds.' seconds');
