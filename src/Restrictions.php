@@ -21,7 +21,7 @@ class Restrictions
     // Location
     const MAXIMUM_DEPTH_OF_CHILD_NODES = 32;
     const KEY_LENGTH_IN_BYTES = 768;
-    const FORBIDDEN_NODE_KEY_CHARS = '.$#[]';
+    const FORBIDDEN_NODE_KEY_CHARS = '$#[]';
 
     // Body
     const BODY_SIZE_IN_MB = 256;

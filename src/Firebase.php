@@ -203,6 +203,7 @@ class Firebase implements FirebaseInterface
         $request = $messageFactory
             ->createRequest($url, $method)
             ->withHeader('accept', 'application/json')
+            ->withHeader('content-type', 'application/json')
             ->withHeader('accept-charset', 'utf-8');
 
         if ($this->getConfiguration()->hasGoogleClient()) {
@@ -244,7 +245,7 @@ class Firebase implements FirebaseInterface
 
     private function createRequestUrl($location, Query $query = null)
     {
-        $url = sprintf('%s/%s.json', $this->getBaseUrl(), Utils::normalizeLocation($location));
+        $url = sprintf('%s/%s', $this->getBaseUrl(), Utils::normalizeLocation($location));
 
         $params = [];
         if ($query) {
